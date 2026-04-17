@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Языки коренных народов и топонимы России</title>
+	<style>
+		:root {
+			--bg-1: #f7f1e3;
+			--bg-2: #e8dcc2;
+			--ink: #1f2a2e;
+			--accent: #b55239;
+			--accent-2: #3f6b5f;
+			--card: #fffdf8;
+			--line: #d6c6a8;
+			--shadow: 0 18px 38px rgba(31, 42, 46, 0.16);
+			--radius: 16px;
+			--speed: 560ms;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+			color: var(--ink);
+			transition: background 240ms ease, color 240ms ease;
+			background:
+				radial-gradient(circle at 10% 20%, rgba(181, 82, 57, 0.12) 0, rgba(181, 82, 57, 0) 34%),
+				radial-gradient(circle at 90% 85%, rgba(63, 107, 95, 0.13) 0, rgba(63, 107, 95, 0) 33%),
+				linear-gradient(135deg, var(--bg-1), var(--bg-2));
+			min-height: 100vh;
+		}
+
+		body[data-theme="dark"] {
+			--bg-1: #121a1d;
+			--bg-2: #1c2a2e;
+			--ink: #e7ecea;
+			--accent: #df8a63;
+			--accent-2: #7eb7a8;
+			--card: #213136;
+			--line: #42626a;
+			--shadow: 0 18px 38px rgba(0, 0, 0, 0.45);
+		}
+
+		.ornament-bar {
+			height: 18px;
+			background:
+				linear-gradient(45deg, var(--accent) 25%, transparent 25%) -9px 0/18px 18px,
+				linear-gradient(-45deg, var(--accent) 25%, transparent 25%) -9px 0/18px 18px,
+				linear-gradient(45deg, transparent 75%, var(--accent-2) 75%) -9px 0/18px 18px,
+				linear-gradient(-45deg, transparent 75%, var(--accent-2) 75%) -9px 0/18px 18px;
+			border-bottom: 2px solid rgba(31, 42, 46, 0.15);
+		}
+
+		.wrapper {
+			width: min(1100px, 92vw);
+			margin: 0 auto;
+			padding: 28px 0 44px;
+		}
+
+		.hero {
+			border: 3px solid rgba(31, 42, 46, 0.18);
+			border-radius: var(--radius);
+			background: rgba(255, 253, 248, 0.78);
+			box-shadow: var(--shadow);
+			padding: 22px 22px 18px;
+			backdrop-filter: blur(1.5px);
+			animation: rise 700ms ease-out both;
+		}
+
+		body[data-theme="dark"] .hero {
+			border-color: rgba(231, 236, 234, 0.16);
+			background: rgba(22, 31, 36, 0.8);
+		}
+
+		h1 {
+			margin: 0;
+			font-size: clamp(1.3rem, 2.2vw, 2.05rem);
+			letter-spacing: 0.4px;
+			text-transform: uppercase;
+		}
+
+		.subtitle {
+			margin: 12px 0 0;
+			line-height: 1.45;
+			max-width: 80ch;
+		}
+
+		.controls {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin-top: 14px;
+		}
+
+		.btn {
+			border: 0;
+			border-radius: 12px;
+			background: linear-gradient(135deg, var(--accent), #d07a53);
+			color: #fff;
+			padding: 10px 14px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: transform 180ms ease, filter 180ms ease;
+		}
+
+		.btn:nth-child(2) {
+			background: linear-gradient(135deg, var(--accent-2), #5f9a8b);
+		}
+
+		#theme-toggle {
+			background: linear-gradient(135deg, #445f6a, #6a8a96);
+		}
+
+		.btn:hover,
+		.btn:focus-visible {
+			transform: translateY(-2px);
+			filter: brightness(1.05);
+			outline: none;
+		}
+
+		.cards {
+			margin-top: 24px;
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+			gap: 16px;
+		}
+
+		.card {
+			position: relative;
+			min-height: 325px;
+			perspective: 1100px;
+			animation: rise 640ms ease-out both;
+			animation-delay: calc(var(--i) * 75ms);
+		}
+
+		.card-btn {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			border: 0;
+			background: transparent;
+			cursor: pointer;
+			z-index: 4;
+		}
+
+		.card-btn:focus-visible {
+			outline: 3px solid rgba(63, 107, 95, 0.5);
+			outline-offset: 4px;
+			border-radius: var(--radius);
+		}
+
+		.inner {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			transform-style: preserve-3d;
+			transition: transform var(--speed) cubic-bezier(.2, .8, .2, 1);
+		}
+
+		.card.is-flipped .inner {
+			transform: rotateY(180deg);
+		}
+
+		.face {
+			position: absolute;
+			inset: 0;
+			border-radius: var(--radius);
+			border: 2px solid var(--line);
+			background: var(--card);
+			box-shadow: var(--shadow);
+			backface-visibility: hidden;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.front-media {
+			height: 44%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			background: linear-gradient(120deg, rgba(181, 82, 57, 0.92), rgba(63, 107, 95, 0.9));
+			color: #fff;
+			font-size: 3.05rem;
+			text-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+		}
+
+		.front-media img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+
+		.emoji-badge {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			font-size: 1.7rem;
+			line-height: 1;
+			background: rgba(0, 0, 0, 0.36);
+			backdrop-filter: blur(2px);
+			padding: 6px 8px;
+			border-radius: 999px;
+			text-shadow: none;
+		}
+
+		.front-content,
+		.back-content {
+			padding: 12px 14px 14px;
+		}
+
+		.title {
+			margin: 0;
+			font-size: 1.08rem;
+		}
+
+		.region {
+			margin: 8px 0 0;
+			font-size: 0.95rem;
+			color: rgba(31, 42, 46, 0.82);
+		}
+
+		body[data-theme="dark"] .region {
+			color: rgba(231, 236, 234, 0.85);
+		}
+
+		.hint {
+			margin-top: auto;
+			border-top: 1px dashed var(--line);
+			padding: 10px 14px;
+			font-size: 0.82rem;
+			color: rgba(31, 42, 46, 0.66);
+			background: rgba(232, 220, 194, 0.3);
+		}
+
+		body[data-theme="dark"] .hint {
+			color: rgba(231, 236, 234, 0.72);
+			background: rgba(38, 55, 62, 0.45);
+		}
+
+		.back {
+			transform: rotateY(180deg);
+			background: linear-gradient(160deg, #fffdf8 0%, #f3ead7 100%);
+		}
+
+		body[data-theme="dark"] .back {
+			background: linear-gradient(160deg, #24363c 0%, #203036 100%);
+		}
+
+		.tag {
+			display: inline-block;
+			font-size: 0.78rem;
+			padding: 4px 9px;
+			border-radius: 999px;
+			background: rgba(63, 107, 95, 0.11);
+			color: var(--accent-2);
+			font-weight: 700;
+			margin-bottom: 8px;
+		}
+
+		.meaning {
+			margin: 8px 0;
+			color: var(--accent);
+			font-weight: 700;
+		}
+
+		.explain {
+			margin: 0;
+			line-height: 1.36;
+			font-size: 0.93rem;
+		}
+
+		footer {
+			margin-top: 24px;
+			border: 2px solid rgba(31, 42, 46, 0.16);
+			border-radius: var(--radius);
+			background: rgba(255, 253, 248, 0.86);
+			padding: 14px 16px;
+			font-size: 0.9rem;
+			line-height: 1.35;
+		}
+
+		body[data-theme="dark"] footer {
+			border-color: rgba(231, 236, 234, 0.16);
+			background: rgba(22, 31, 36, 0.8);
+		}
+
+		.copyright {
+			display: inline-block;
+			margin-top: 8px;
+			font-weight: 700;
+			color: rgba(31, 42, 46, 0.8);
+		}
+
+		@keyframes rise {
+			from {
+				opacity: 0;
+				transform: translateY(14px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@media (max-width: 640px) {
+			.wrapper {
+				width: min(96vw, 1100px);
+				padding-top: 18px;
+			}
+
+			.hero {
+				padding: 16px 14px;
+			}
+
+			.cards {
+				gap: 12px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="ornament-bar" aria-hidden="true"></div>
+
+	<main class="wrapper">
+		<section class="hero">
+			<h1>Языки коренных народов и топонимы России</h1>
+			<p class="subtitle">
+				Нажмите на карточку, чтобы увидеть язык народа и образный перевод топонима.
+				Примеры собраны по популярным этимологическим версиям из материалов по топонимике и этнолингвистике.
+			</p>
+			<div class="controls">
+				<button class="btn" id="flip-all">Перевернуть все карточки</button>
+				<button class="btn" id="reset-all">Показать лицевую сторону</button>
+				<button class="btn" id="theme-toggle" aria-pressed="false">Тёмная тема</button>
+			</div>
+		</section>
+
+		<section class="cards" id="cards" aria-label="Коллекция топонимов"></section>
+
+		<footer>
+			<strong>Примечание:</strong> часть топонимов имеет несколько версий происхождения.
+			На странице показаны наиболее распространенные в учебной литературе трактовки,
+			связанные с образами животных.
+			<br>
+			<span class="copyright">© 2026 Жернак Тимофей</span>
+		</footer>
+	</main>
+
+	<script>
+		const data = [
+			{
+				title: "Ангара (река)",
+				region: "Иркутская область, Красноярский край",
+				language: "Бурятский / эвенкийский (по версии)",
+				translation: "\"Пасть зверя\"",
+				explanation: "Образ связывают с устьем реки, словно с широко раскрытой пастью у Байкала.",
+				icon: "🌊",
+				image: "https://adventure-guide.ru/upload/resize_cache/iblock/cc9/1y1aycj0wzbitbf84dxkoz0ljpmip2n8/740_999999_1/Vid-na-istok-Angary-s-Kamnya-Cherskogo-_wiki-_Melnikov-Vyacheslav_.jpg"
+			},
+			{
+				title: "Аю-Даг (гора)",
+				region: "Крым",
+				language: "Крымскотатарский",
+				translation: "\"Медведь-гора\"",
+				explanation: "Форма горы напоминает лежащего у моря медведя.",
+				icon: "🐻",
+				image: "https://b1.vpoxod.ru/ckeditor/e5/d1/7a/199747.jpg"
+			},
+			{
+				title: "Нерюнгри (река / город)",
+				region: "Республика Саха (Якутия)",
+				language: "Эвенкийский",
+				translation: "\"Река хариуса\"",
+				explanation: "Название связывают со словом о рыбе хариус, важной для местного промысла.",
+				icon: "🐟",
+				image: "https://cdn.ruwiki.ru/commonswiki/files/c/ca/%D0%9D%D0%B5%D1%80%D1%8E%D0%BD%D0%B3%D1%80%D0%B8_%D1%81_%D0%B2%D1%8B%D1%81%D0%BE%D1%82%D1%8B_%D0%BF%D1%82%D0%B8%D1%87%D1%8C%D0%B5%D0%B3%D0%BE_%D0%BF%D0%BE%D0%BB%D1%91%D1%82%D0%B0.jpg"
+			},
+			{
+				title: "Воркута (река / город)",
+				region: "Республика Коми",
+				language: "Ненецкий (по версии)",
+				translation: "\"Медвежье место\"",
+				explanation: "В одной из трактовок корень связан с медведем и местами его обитания в тундре.",
+				icon: "🐾",
+				image: "https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_1818,h_1228/https://regionsrf.ru/wp-content/uploads/2023/06/gorod-vorkuta.jpg"
+			},
+			{
+				title: "Кондопога (город)",
+				region: "Республика Карелия",
+				language: "Карельский / вепсский (финно-угорские языки)",
+				translation: "\"Медвежий край\"",
+				explanation: "В этимологических версиях выделяют основу, связанную с образом медведя.",
+				icon: "🗻",
+				image: "https://upload.wikimedia.org/wikipedia/commons/c/cc/Kondopoga_06-2017_img05_Lotos_Mall_surroundings.jpg"
+			},
+			{
+				title: "Койгородок (район)",
+				region: "Республика Коми",
+				language: "Коми-зырянский",
+				translation: "\"Волчье место\"",
+				explanation: "Название связывают со словом \"кой\" (волк) в коми топонимической традиции.",
+				icon: "🐺",
+				image: "https://sp-koigorodok.ru/media/resized/F8-dTdXA6omZaQrqA8u4pndSTvKXJcB1ddn8CsNSxfQ/rs:fit:1024:768/aHR0cHM6Ly9zcC1r/b2lnb3JvZG9rLnJ1/L21lZGlhL3Byb2pl/Y3RfbW9fMzQyLzFl/LzY2LzRlLzlhL2E2/LzFjL3ZpZC1zdmVy/aHUuanBn.jpg"
+			}
+		];
+
+		const cardsRoot = document.getElementById("cards");
+		const flipAllBtn = document.getElementById("flip-all");
+		const resetAllBtn = document.getElementById("reset-all");
+		const themeToggleBtn = document.getElementById("theme-toggle");
+		const themeStorageKey = "toponyms-theme";
+
+		function applyTheme(theme) {
+			document.body.dataset.theme = theme;
+			const dark = theme === "dark";
+			themeToggleBtn.textContent = dark ? "Светлая тема" : "Тёмная тема";
+			themeToggleBtn.setAttribute("aria-pressed", String(dark));
+			localStorage.setItem(themeStorageKey, theme);
+		}
+
+		const savedTheme = localStorage.getItem(themeStorageKey);
+		const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+		applyTheme(savedTheme || (prefersDark ? "dark" : "light"));
+
+		themeToggleBtn.addEventListener("click", () => {
+			const currentTheme = document.body.dataset.theme === "dark" ? "dark" : "light";
+			applyTheme(currentTheme === "dark" ? "light" : "dark");
+		});
+
+		function cardTemplate(item, idx) {
+			const media = item.image
+				? `<img src="${item.image}" alt="${item.title}"><span class="emoji-badge" aria-hidden="true">${item.icon}</span>`
+				: item.icon;
+
+			return `
+				<article class="card" style="--i:${idx}">
+					<button class="card-btn" aria-label="Перевернуть карточку: ${item.title}"></button>
+					<div class="inner">
+						<div class="face front">
+							<div class="front-media" aria-hidden="true">${media}</div>
+							<div class="front-content">
+								<h2 class="title">${item.title}</h2>
+								<p class="region"><strong>Регион:</strong> ${item.region}</p>
+							</div>
+							<div class="hint">Нажмите, чтобы увидеть перевод и язык</div>
+						</div>
+						<div class="face back">
+							<div class="back-content">
+								<span class="tag">Язык: ${item.language}</span>
+								<h3 class="title">${item.title}</h3>
+								<p class="meaning">Перевод: ${item.translation}</p>
+								<p class="explain">${item.explanation}</p>
+							</div>
+							<div class="hint">Нажмите снова, чтобы вернуться</div>
+						</div>
+					</div>
+				</article>
+			`;
+		}
+
+		cardsRoot.innerHTML = data.map(cardTemplate).join("");
+
+		const cards = Array.from(document.querySelectorAll(".card"));
+
+		function toggleCard(card) {
+			card.classList.toggle("is-flipped");
+		}
+
+		cards.forEach((card) => {
+			card.querySelector(".card-btn").addEventListener("click", () => toggleCard(card));
+			card.addEventListener("keydown", (event) => {
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+					toggleCard(card);
+				}
+			});
+		});
+
+		flipAllBtn.addEventListener("click", () => {
+			cards.forEach((card) => card.classList.add("is-flipped"));
+		});
+
+		resetAllBtn.addEventListener("click", () => {
+			cards.forEach((card) => card.classList.remove("is-flipped"));
+		});
+	</script>
+</body>
+</html>
